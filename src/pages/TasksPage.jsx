@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { DndContext } from "@dnd-kit/core";
 import TaskColumn from "../components/TaskColumn";
 import CreateTaskModal from "../components/CreateTaskModal";
 import { fetchTasks, createTask, updateTask, deleteTask } from "../api/tasksApi";
@@ -98,6 +99,22 @@ const TasksPage = () => {
 		}
 	};
 
+	const handleDragEnd = ({ active, over }) => {
+		if (!over) return;
+
+		const taskId = active.id;
+		const newStatus = over.id;
+
+		setTasks((prev) =>
+			prev.map((task) =>
+				task.id === taskId
+					? { ...task, status: newStatus }
+					: task
+			)
+		);
+	};
+
+
 	if (status === "error") {
 		return (
 			<p className="text-red-500">
@@ -117,18 +134,21 @@ const TasksPage = () => {
 				+ Add Task
 			</button>
 
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				{STATUSES.map(({ key, label }) => (
-					<TaskColumn
-						key={key}
-						title={label}
-						loading={status === "loading"}
-						tasks={tasks.filter((task) => task.status === key)}
-						onMove={handleMoveTask}
-						onDelete={handleDeleteTask}
-					/>
-				))}
-			</div>
+			<DndContext onDragEnd={handleDragEnd}>
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					{STATUSES.map(({ key, label }) => (
+						<TaskColumn
+							key={key}
+							status={key}
+							title={label}
+							loading={status === "loading"}
+							tasks={tasks.filter((task) => task.status === key)}
+							onMove={handleMoveTask}
+							onDelete={handleDeleteTask}
+						/>
+					))}
+				</div>
+			</DndContext>
 			{isModalOpen && (
 				<CreateTaskModal
 					onClose={() => setIsModalOpen(false)}
