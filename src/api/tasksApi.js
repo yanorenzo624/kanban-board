@@ -32,3 +32,14 @@ export const updateTask = async (id, updates) => {
 
   return tasks.find((task) => task.id === id);
 };
+
+export const deleteTask = async (taskId) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // simulate random failure
+      Math.random() > 0.1
+        ? resolve()
+        : reject(new Error("Delete failed"));
+    }, 500);
+  });
+};

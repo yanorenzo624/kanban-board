@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchTasks } from "../api/tasksApi";
 import TaskColumn from "../components/TaskColumn";
 import CreateTaskModal from "../components/CreateTaskModal";
-import { createTask } from "../api/tasksApi";
+import { fetchTasks, createTask, updateTask, deleteTask } from "../api/tasksApi";
 
 
 const STATUSES = [
@@ -27,6 +26,43 @@ const TasksPage = () => {
 			});
 	}, []);
 
+	const getNextStatus = (status) => {
+		if (status === "todo") return "in-progress";
+		if (status === "in-progress") return "done";
+		return "done";
+	};
+
+	const handleMoveTask = async (task) => {
+		const nextStatus = getNextStatus(task.status);
+
+		// optimistic UI update
+		setTasks((prev) =>
+			prev.map((t) =>
+				t.id === task.id
+					? { ...t, status: nextStatus }
+					: t
+			)
+		);
+
+		try {
+			await updateTask({
+				...task,
+				status: nextStatus,
+			});
+		} catch {
+			// rollback on failure
+			setTasks((prev) =>
+				prev.map((t) =>
+					t.id === task.id
+						? { ...t, status: task.status }
+						: t
+				)
+			);
+
+			alert("Failed to move task");
+		}
+	};
+
 	const handleCreateTask = async (task) => {
 		try {
 			const newTask = await createTask(task);
@@ -34,6 +70,31 @@ const TasksPage = () => {
 			setIsModalOpen(false);
 		} catch {
 			alert("Failed to create task");
+		}
+	};
+
+	const handleDeleteTask = async (task) => {
+		const confirmed = window.confirm(
+			`Delete task "${task.title}"?`
+		);
+
+		if (!confirmed) return;
+
+		// backup for rollback
+		const prevTasks = tasks;
+
+		// optimistic update
+		setTasks((prev) =>
+			prev.filter((t) => t.id !== task.id)
+		);
+
+		try {
+			await deleteTask(task.id);
+		} catch {
+			alert("Failed to delete task");
+
+			// rollback
+			setTasks(prevTasks);
 		}
 	};
 
@@ -63,6 +124,8 @@ const TasksPage = () => {
 						title={label}
 						loading={status === "loading"}
 						tasks={tasks.filter((task) => task.status === key)}
+						onMove={handleMoveTask}
+						onDelete={handleDeleteTask}
 					/>
 				))}
 			</div>
