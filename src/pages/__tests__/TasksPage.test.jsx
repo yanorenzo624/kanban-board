@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, vi } from "vitest";
 
@@ -12,6 +12,27 @@ vi.mock("../../api/tasksApi", () => ({
 	updateTask: vi.fn(),
 	deleteTask: vi.fn(),
 }));
+
+vi.mock("@dnd-kit/core", async () => {
+	const actual = await vi.importActual("@dnd-kit/core");
+
+	return {
+		...actual,
+		DndContext: ({ children, onDragEnd }) => (
+			<div
+				data-testid="dnd-context"
+				onDragEnd={() =>
+					onDragEnd({
+						active: { id: 1 },
+						over: { id: "done" },
+					})
+				}
+			>
+				{children}
+			</div>
+		),
+	};
+});
 
 describe("TasksPage", () => {
 	beforeEach(() => {
@@ -85,10 +106,15 @@ describe("TasksPage", () => {
 			// Wait for task to appear
 			const task = await screen.findByText("Task A");
 			expect(task).toBeInTheDocument();
-
 			// Click Move →
-			const moveBtn = screen.getByRole("button", { name: /move/i });
-			await user.click(moveBtn);
+			// narrow scope to THIS task card
+			const taskCard = task.closest("div");
+
+			const moveButton = within(taskCard).getByRole("button", {
+				name: /move/i,
+			});
+
+			await user.click(moveButton);
 
 			// Task should still exist (now in next column)
 			expect(await screen.findByText("Task A")).toBeInTheDocument();
@@ -109,28 +135,45 @@ describe("TasksPage", () => {
 				{ id: 1, title: "Task A", status: "todo" },
 				{ id: 2, title: "Task B", status: "todo" },
 			]);
-	
+
 			tasksApi.deleteTask.mockResolvedValue();
-	
+
 			// mock confirm dialog
 			vi.spyOn(window, "confirm").mockReturnValue(true);
-	
+
 			render(<TasksPage />);
-	
+
 			// wait for tasks to appear
 			expect(await screen.findByText("Task A")).toBeInTheDocument();
-	
+
 			// click delete
 			const deleteButtons = screen.getAllByText("Delete");
 			await userEvent.click(deleteButtons[0]);
-	
+
 			// task should disappear
 			await waitFor(() => {
 				expect(screen.queryByText("Task A")).not.toBeInTheDocument();
 			});
-	
+
 			// API called
 			expect(tasksApi.deleteTask).toHaveBeenCalledWith(1);
+		});
+	});
+
+	describe("Drag & Drop", () => {
+		it("moves task to another column via drag & drop", async () => {
+			render(<TasksPage />);
+
+			// wait initial tasks load
+			expect(await screen.findByText("Task A")).toBeInTheDocument();
+
+			// simulate drag end
+			fireEvent.dragEnd(screen.getByTestId("dnd-context"));
+
+			// task should now appear in Done column
+			await waitFor(() => {
+				expect(screen.getByText("Task A")).toBeInTheDocument();
+			});
 		});
 	});
 });
