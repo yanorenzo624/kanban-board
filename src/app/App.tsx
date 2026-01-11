@@ -1,11 +1,9 @@
-import { Providers } from "./providers";
+import { BoardPage } from "@/pages/BoardPage";
 
 export default function App() {
   return (
-    <Providers>
-      <main className="min-h-screen bg-gray-100 text-gray-900">
-        {/* UI will live here */}
-      </main>
-    </Providers>
+    <main className="min-h-screen bg-gray-100 text-gray-900">
+      <BoardPage />
+    </main>
   );
 }
