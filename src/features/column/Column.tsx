@@ -5,6 +5,7 @@ import { useDroppable } from "@dnd-kit/core"
 import clsx from "clsx"
 import Card from "@/features/card/Card"
 import { BoardContext } from "@/app/providers/BoardProvider"
+import { ColumnHeader } from "./ColumnHeader"
 
 type Props = {
   column: ColumnType
@@ -24,20 +25,17 @@ export default function Column({ column }: Props) {
     setIsAdding(false)
   }
 
-
   return (
     <div
       ref={setNodeRef}
       className={clsx(
         "w-72 shrink-0 rounded-xl p-4 transition-colors border border-slate-300 dark:border-slate-700",
         isOver
-          ? "bg-blue-200 dark:bg-blue-900"
+          ? "bg-blue-200 dark:bg-slate-900"
           : "bg-slate-200 dark:bg-slate-800"
       )}
     >
-      <h2 className="mb-4 text-lg font-semibold text-slate-700">
-        {column.title}
-      </h2>
+      <ColumnHeader columnId={column.id} />
 
       <SortableContext
         items={column.cardIds}
@@ -83,30 +81,28 @@ export default function Column({ column }: Props) {
                 cancelAdd()
               }
             }}
-            className="w-full rounded-md border p-2 text-sm"
+            className="
+              w-full rounded-md border px-2 py-1 text-sm
+              bg-white text-slate-900
+              focus:ring-2 focus:ring-blue-500
+              dark:bg-slate-800 dark:text-slate-100
+              dark:border-slate-700
+            "
             placeholder="Card title"
           />
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              className="flex-1 rounded-md bg-blue-600 py-1.5 text-sm text-white hover:bg-blue-700"
-            >
-              Add
-            </button>
-
-            <button
-              type="button"
-              onClick={cancelAdd}
-              className="flex-1 rounded-md border py-1.5 text-sm text-slate-600 hover:bg-slate-300"
-            >
-              Cancel
-            </button>
-          </div>
         </form>
       ) : (
         <button
           onClick={() => setIsAdding(true)}
-          className="mt-4 w-full rounded-lg border border-dashed border-slate-400 py-2 text-sm text-slate-600 hover:bg-slate-300">
+          className="
+            mt-4 w-full rounded-lg 
+            border border-dashed border-slate-400 
+            py-2 text-sm 
+            text-slate-600 hover:bg-slate-300
+
+            dark:border-slate-700 dark:bg-slate-800
+            dark:text-slate-300 dark:hover:bg-slate-900
+          ">
           + Add card
         </button>
       )}

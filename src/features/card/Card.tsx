@@ -46,7 +46,10 @@ export default function Card({ card, columnId }: Props) {
         {...attributes}
         className="flex justify-between items-start gap-2 cursor-grab active:cursor-grabbing"
       >
-        <h3 className="text-sm font-medium text-slate-800">
+        <h3 className="
+          text-sm font-medium 
+          text-slate-800 dark:text-slate-300
+        ">
           {card.title}
         </h3>
         <button
@@ -65,7 +68,7 @@ export default function Card({ card, columnId }: Props) {
             group-hover:opacity-100
             hover:bg-red-50 hover:text-red-600
             dark:hover:bg-red-900/30 dark:hover:text-red-400
-            dark:bg-slate-800 dark:text-slate-100
+            dark:bg-slate-800 dark:text-slate-400
             border border-transparent dark:border-slate-700
             group-hover:opacity-100
             focus:opacity-100 focus:outline-none

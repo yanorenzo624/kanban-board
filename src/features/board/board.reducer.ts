@@ -1,9 +1,12 @@
-import type { BoardState } from "./board.types";
+import type { Column, BoardState } from "./board.types";
 
 export type BoardAction =
 	| { type: "MOVE_CARD"; cardId: string; fromColumnId: string; toColumnId: string; toIndex: number }
 	| { type: "ADD_CARD"; columnId: string; title: string }
 	| { type: "DELETE_CARD"; cardId: string; columnId: string }
+	| { type: "COLUMN_ADD"; title: string }
+	| { type: "COLUMN_RENAME"; columnId: string; title: string }
+	| { type: "COLUMN_DELETE"; columnId: string }
 
 export function boardReducer(state: BoardState, action: BoardAction): BoardState {
 	switch (action.type) {
@@ -52,7 +55,7 @@ export function boardReducer(state: BoardState, action: BoardAction): BoardState
 				},
 			}
 		}
-		
+
 		case "ADD_CARD": {
 			const id = crypto.randomUUID()
 			return {
@@ -86,6 +89,68 @@ export function boardReducer(state: BoardState, action: BoardAction): BoardState
 						cardIds: state.columns[columnId].cardIds.filter(id => id !== cardId),
 					},
 				},
+			}
+		}
+
+		case "COLUMN_ADD": {
+			const id = crypto.randomUUID()
+
+			const newColumn: Column = {
+				id,
+				title: action.title,
+				cardIds: [],
+			}
+
+			return {
+				...state,
+				columns: {
+					...state.columns,
+					[id]: newColumn,
+				},
+				columnOrder: [...state.columnOrder, id],
+			}
+		}
+
+		case "COLUMN_RENAME": {
+			const { columnId, title } = action
+			const column = state.columns[columnId]
+			if (!column) return state
+
+			return {
+				...state,
+				columns: {
+					...state.columns,
+					[columnId]: {
+						...column,
+						title,
+					},
+				},
+			}
+		}
+
+		case "COLUMN_DELETE": {
+			const { columnId } = action
+			const column = state.columns[columnId]
+			if (!column) return state
+
+			const newColumns = { ...state.columns }
+			delete newColumns[columnId]
+
+			const newColumnOrder = state.columnOrder.filter(
+				(id) => id !== columnId
+			)
+
+			// Remove cards belonging to the column
+			const newCards = { ...state.cards }
+			column.cardIds.forEach((cardId) => {
+				delete newCards[cardId]
+			})
+
+			return {
+				...state,
+				columns: newColumns,
+				columnOrder: newColumnOrder,
+				cards: newCards,
 			}
 		}
 

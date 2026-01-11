@@ -3,6 +3,7 @@ import { DndContext, type DragEndEvent, DragOverlay } from "@dnd-kit/core"
 import { BoardContext } from "@/app/providers/BoardProvider"
 import Column from "@/features/column/Column"
 import Card from "@/features/card/Card"
+import AddColumn from "@/features/column/AddColumn"
 
 export default function Board() {
   const { state, dispatch } = useContext(BoardContext)
@@ -45,6 +46,8 @@ export default function Board() {
           const column = state.columns[columnId]
           return <Column key={column.id} column={column} />
         })}
+        
+        <AddColumn />
       </div>
 
       <DragOverlay>
