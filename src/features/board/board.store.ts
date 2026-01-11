@@ -44,11 +44,14 @@ export const useBoardStore = create<BoardStore>((set, get) => {
 		},
 
 		addCard: (columnId, title) => {
+			const trimmed = title.trim();
+			if (!trimmed) return;
+
 			const cardId = crypto.randomUUID();
 
 			const newCard: Card = {
 				id: cardId,
-				title,
+				title: trimmed,
 				createdAt: Date.now(),
 			};
 
@@ -75,5 +78,6 @@ export const useBoardStore = create<BoardStore>((set, get) => {
 				return next;
 			});
 		},
+
 	};
 });
