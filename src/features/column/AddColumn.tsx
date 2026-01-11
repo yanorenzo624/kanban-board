@@ -71,34 +71,11 @@ export default function AddColumn() {
         className="
           w-full rounded-md border px-2 py-1 text-sm
           bg-white text-slate-900
-          focus:outline-none focus:ring-2 focus:ring-blue-500
+          focus:ring-2 focus:ring-blue-500
           dark:bg-slate-800 dark:text-slate-100
           dark:border-slate-700
         "
       />
-
-      <div className="mt-2 flex gap-2">
-        <button
-          onClick={handleSubmit}
-          className="
-            rounded-md bg-blue-600 px-3 py-1 text-sm
-            text-white hover:bg-blue-700
-          "
-        >
-          Add
-        </button>
-
-        <button
-          onClick={handleCancel}
-          className="
-            rounded-md px-3 py-1 text-sm
-            text-slate-600 hover:bg-slate-300
-            dark:text-slate-400 dark:hover:bg-slate-800
-          "
-        >
-          Cancel
-        </button>
-      </div>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import type { Column, BoardState } from "./board.types";
 export type BoardAction =
 	| { type: "MOVE_CARD"; cardId: string; fromColumnId: string; toColumnId: string; toIndex: number }
 	| { type: "ADD_CARD"; columnId: string; title: string }
+	| { type: "UPDATE_CARD"; cardId: string; title: string; description?: string }
 	| { type: "DELETE_CARD"; cardId: string; columnId: string }
 	| { type: "COLUMN_ADD"; title: string }
 	| { type: "COLUMN_RENAME"; columnId: string; title: string }
@@ -73,6 +74,25 @@ export function boardReducer(state: BoardState, action: BoardAction): BoardState
 				},
 			}
 		}
+
+		case "UPDATE_CARD": {
+			const { cardId, title, description } = action
+			const card = state.cards[cardId]
+			if (!card) return state
+
+			return {
+				...state,
+				cards: {
+					...state.cards,
+					[cardId]: {
+						...card,
+						title,
+						description,
+					},
+				},
+			}
+		}
+
 
 		case "DELETE_CARD": {
 			const { cardId, columnId } = action
