@@ -1,18 +1,17 @@
-export interface Card {
-  id: string;
-  title: string;
-  description?: string;
-  createdAt: number;
+export type Card = {
+  id: string
+  title: string
+  description?: string
 }
 
-export interface Column {
-  id: string;
-  title: string;
-  cardIds: string[];
+export type Column = {
+  id: string
+  title: string
+  cardIds: string[]
 }
 
-export interface BoardState {
-  columns: Record<string, Column>;
-  cards: Record<string, Card>;
-  columnOrder: string[];
+export type BoardState = {
+  columns: Record<string, Column>
+  cards: Record<string, Card>
+  columnOrder: string[]
 }

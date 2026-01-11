@@ -1,9 +1,12 @@
-import { BoardPage } from "@/pages/BoardPage";
+import { BoardProvider } from "./providers/BoardProvider"
+import Board from "@/features/board/Board"
 
 export default function App() {
   return (
-    <main className="min-h-screen bg-gray-100 text-gray-900">
-      <BoardPage />
-    </main>
-  );
+    <BoardProvider>
+      <div className="min-h-screen bg-slate-100 p-6">
+        <Board />
+      </div>
+    </BoardProvider>
+  )
 }
