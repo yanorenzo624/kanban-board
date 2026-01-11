@@ -1,12 +1,9 @@
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useBoardStore } from "@/features/board/board.store";
 import { Card } from "@/components/card/Card";
 import { AddCard } from "./AddCard";
 
-interface ColumnProps {
-  columnId: string;
-}
-
-export function Column({ columnId }: ColumnProps) {
+export function Column({ columnId }: { columnId: string }) {
   const column = useBoardStore((s) => s.columns[columnId]);
   const cardsMap = useBoardStore((s) => s.cards);
 
@@ -22,11 +19,16 @@ export function Column({ columnId }: ColumnProps) {
         {column.title}
       </h2>
 
-      <div className="flex-1 space-y-2 overflow-y-auto pr-1">
-        {cards.map((card) => (
-          <Card key={card.id} card={card} />
-        ))}
-      </div>
+      <SortableContext
+        items={column.cardIds}
+        strategy={verticalListSortingStrategy}
+      >
+        <div className="flex-1 space-y-2 overflow-y-auto pr-1">
+          {cards.map((card) => (
+            <Card key={card.id} card={card} />
+          ))}
+        </div>
+      </SortableContext>
 
       <AddCard columnId={columnId} />
     </div>

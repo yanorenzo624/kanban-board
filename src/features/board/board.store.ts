@@ -5,6 +5,12 @@ import { loadFromStorage, saveToStorage } from "@/lib/storage";
 interface BoardStore extends BoardState {
 	addColumn: (title: string) => void;
 	addCard: (columnId: string, title: string) => void;
+	moveCard: (
+		cardId: string,
+		sourceColumnId: string,
+		targetColumnId: string,
+		targetIndex: number,
+	) => void;
 }
 
 const initialState: BoardState = {
@@ -79,5 +85,56 @@ export const useBoardStore = create<BoardStore>((set, get) => {
 			});
 		},
 
+		moveCard: (cardId, sourceId, targetId, targetIndex) => {
+			set((state) => {
+				const source = state.columns[sourceId];
+				const target = state.columns[targetId];
+				if (!source || !target) return state;
+
+				// Remove from source
+				const sourceCardIds = source.cardIds.filter((id) => id !== cardId);
+
+				// Reordering within the same column
+				if (sourceId === targetId) {
+					sourceCardIds.splice(targetIndex, 0, cardId);
+
+					const next = {
+						...state,
+						columns: {
+							...state.columns,
+							[sourceId]: {
+								...source,
+								cardIds: sourceCardIds,
+							},
+						},
+					};
+
+					saveToStorage(next);
+					return next;
+				}
+
+				// Moving to a different column
+				const targetCardIds = [...target.cardIds];
+				targetCardIds.splice(targetIndex, 0, cardId);
+
+				const next = {
+					...state,
+					columns: {
+						...state.columns,
+						[sourceId]: {
+							...source,
+							cardIds: sourceCardIds,
+						},
+						[targetId]: {
+							...target,
+							cardIds: targetCardIds,
+						},
+					},
+				};
+
+				saveToStorage(next);
+				return next;
+			});
+		},
 	};
 });
