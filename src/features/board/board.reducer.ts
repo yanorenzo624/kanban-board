@@ -3,6 +3,7 @@ import type { BoardState } from "./board.types";
 export type BoardAction =
 	| { type: "MOVE_CARD"; cardId: string; fromColumnId: string; toColumnId: string; toIndex: number }
 	| { type: "ADD_CARD"; columnId: string; title: string }
+	| { type: "DELETE_CARD"; cardId: string; columnId: string }
 
 export function boardReducer(state: BoardState, action: BoardAction): BoardState {
 	switch (action.type) {
@@ -47,6 +48,42 @@ export function boardReducer(state: BoardState, action: BoardAction): BoardState
 							cardId,
 							...toColumn.cardIds.slice(toIndex),
 						],
+					},
+				},
+			}
+		}
+		
+		case "ADD_CARD": {
+			const id = crypto.randomUUID()
+			return {
+				...state,
+				cards: {
+					...state.cards,
+					[id]: { id, title: action.title },
+				},
+				columns: {
+					...state.columns,
+					[action.columnId]: {
+						...state.columns[action.columnId],
+						cardIds: [...state.columns[action.columnId].cardIds, id],
+					},
+				},
+			}
+		}
+
+		case "DELETE_CARD": {
+			const { cardId, columnId } = action
+
+			const { [cardId]: _, ...remainingCards } = state.cards
+
+			return {
+				...state,
+				cards: remainingCards,
+				columns: {
+					...state.columns,
+					[columnId]: {
+						...state.columns[columnId],
+						cardIds: state.columns[columnId].cardIds.filter(id => id !== cardId),
 					},
 				},
 			}

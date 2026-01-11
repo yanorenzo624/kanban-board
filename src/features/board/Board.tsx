@@ -49,7 +49,9 @@ export default function Board() {
 
       <DragOverlay>
         {activeCardId ? (
-          <Card card={state.cards[activeCardId]} />
+          <div className="rotate-1">
+            <Card card={state.cards[activeCardId]} />
+          </div>
         ) : null}
       </DragOverlay>
     </DndContext>
