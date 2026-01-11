@@ -36,6 +36,7 @@ export default function Card({ card, columnId }: Props) {
       style={style}
       className={clsx(
         "group transition-opacity rounded-lg bg-white p-3 shadow-sm hover:shadow",
+        "dark:bg-slate-700 dark:text-slate-100",
         isDragging && "opacity-30",
       )}
     >
@@ -63,6 +64,9 @@ export default function Card({ card, columnId }: Props) {
             opacity-0 transition
             group-hover:opacity-100
             hover:bg-red-50 hover:text-red-600
+            dark:hover:bg-red-900/30 dark:hover:text-red-400
+            dark:bg-slate-800 dark:text-slate-100
+            border border-transparent dark:border-slate-700
             group-hover:opacity-100
             focus:opacity-100 focus:outline-none
           "

@@ -29,8 +29,10 @@ export default function Column({ column }: Props) {
     <div
       ref={setNodeRef}
       className={clsx(
-        "w-72 shrink-0 rounded-xl p-4 transition-colors",
-        isOver ? "bg-blue-200" : "bg-slate-200"
+        "w-72 shrink-0 rounded-xl p-4 transition-colors border border-slate-300 dark:border-slate-700",
+        isOver
+          ? "bg-blue-200 dark:bg-blue-900"
+          : "bg-slate-200 dark:bg-slate-800"
       )}
     >
       <h2 className="mb-4 text-lg font-semibold text-slate-700">
