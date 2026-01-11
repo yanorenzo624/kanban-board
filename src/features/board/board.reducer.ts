@@ -9,7 +9,25 @@ export function boardReducer(state: BoardState, action: BoardAction): BoardState
 		case "MOVE_CARD": {
 			const { cardId, fromColumnId, toColumnId, toIndex } = action
 
-			if (fromColumnId === toColumnId) return state
+			if (fromColumnId === toColumnId) {
+				const column = state.columns[fromColumnId]
+				const newCardIds = [...column.cardIds]
+
+				const fromIndex = newCardIds.indexOf(cardId)
+				newCardIds.splice(fromIndex, 1)
+				newCardIds.splice(toIndex, 0, cardId)
+
+				return {
+					...state,
+					columns: {
+						...state.columns,
+						[fromColumnId]: {
+							...column,
+							cardIds: newCardIds,
+						},
+					},
+				}
+			}
 
 			const fromColumn = state.columns[fromColumnId]
 			const toColumn = state.columns[toColumnId]
