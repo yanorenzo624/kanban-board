@@ -3,6 +3,12 @@ A Trello-inspired Kanban board built with React and TypeScript, focused on clean
 
 ---
 
+## 🚀 Live Demo
+- 👉 Live: https://kanban-board-virid-two.vercel.app/
+- 👉 Portfolio: https://renzoyano.vercel.app/
+
+---
+
 ## 🛠 Tech Stack
 - React + TypeScript
 - Tailwind CSS
