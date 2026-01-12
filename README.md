@@ -1,73 +1,78 @@
-# React + TypeScript + Vite
+# 🗂 Kanban Board
+A Trello-inspired Kanban board built with React and TypeScript, focused on clean state management, scalable architecture, and polished user experience.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## 🛠 Tech Stack
+- React + TypeScript
+- Tailwind CSS
+- @dnd-kit
+- Vitest
+- Vite
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+--- 
 
-## React Compiler
+## ✨ Features
+- Create, rename, and delete columns
+- Create, edit, and delete cards
+- Drag & drop cards between columns
+- Inline editing with keyboard support
+- Dark mode with strong visual contrast
+- Persistent state using localStorage
+- Responsive horizontal board layout
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📸 Preview
+![Screenshot](images/Screenshot1.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🧠 Architecture
+The application uses a reducer-driven architecture inspired by production frontend codebases.
+### State Management
+- useReducer for predictable state transitions
+- Normalized state shape:
+```text
+columns
+cards
+columnOrder
 ```
+- All mutations are handled through explicit reducer actions
+- State is persisted automatically via localStorage
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+This approach keeps updates deterministic and makes future features such as undo/redo or column reordering straightforward to add.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🧩 Providers
+- BoardProvider
+Manages domain state (columns, cards, card drag & drop logic)
+- ThemeProvider
+Handles global UI state (dark/light mode) and persists user preference
+
+Separating providers keeps business logic decoupled from UI concerns.
+
+---
+
+## 🎨 Design Decisions
+- Dark mode is implemented as a layered surface system rather than a color inversion, ensuring strong contrast and readability
+- Global layout concerns live at the app shell level
+- Column and card actions remain contextual to reduce cognitive load
+- Inline editing supports keyboard controls (Enter / Escape)
+
+---
+
+## 🧪 Testing
+Reducer logic is covered by unit tests using Vitest, ensuring predictable state transitions and safe refactoring.
+
+---
+
+## 🚀 Future Improvements
+- Column drag & reorder
+- Undo / redo support
+- Multi-board support
+- Accessibility audit
+- Performance optimizations for large boards
+
+---
