@@ -106,7 +106,10 @@ export default function Card({ card, columnId }: Props) {
               setIsEditingTitle(false)
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter") saveCard({ title })
+              if (e.key === "Enter") {
+                saveCard({ title })
+                setIsEditingTitle(false)
+              }
               if (e.key === "Escape") cancelEdit()
             }}
             autoFocus
@@ -146,6 +149,7 @@ export default function Card({ card, columnId }: Props) {
           onKeyDown={(e) => {
             if (e.key === "Escape") cancelEdit()
           }}
+          placeholder="Card description"
           autoFocus
           className="mt-1 w-full rounded border px-2 py-1 text-sm bg-white dark:bg-slate-800"
         />
